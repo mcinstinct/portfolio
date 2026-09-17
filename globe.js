@@ -113,7 +113,6 @@ canvas.addEventListener('pointermove', (event) => {
 })
 canvas.addEventListener('pointerup', () => { dragging = false })
 canvas.addEventListener('pointercancel', () => { dragging = false })
-canvas.addEventListener('wheel', (event) => { event.preventDefault(); scale = Math.max(size * .30, Math.min(size * .53, scale * (event.deltaY > 0 ? .93 : 1.07))) }, { passive: false })
 mount.addEventListener('click', () => { if (dragDistance < 4) clearFocus() })
 new ResizeObserver(resize).observe(mount)
 resize()
