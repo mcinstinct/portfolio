@@ -65,7 +65,7 @@ function makeDots(feature, step = 2.6) {
   return result
 }
 function resize() {
-  size = Math.floor(Math.min(mount.clientWidth, mount.clientHeight))
+  size = Math.floor(mount.clientWidth)
   const dpr = Math.min(devicePixelRatio || 1, 2)
   canvas.width = size * dpr; canvas.height = size * dpr
   canvas.style.width = `${size}px`; canvas.style.height = `${size}px`
