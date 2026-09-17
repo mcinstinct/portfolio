@@ -67,7 +67,7 @@ function resize() {
   canvas.width = size * dpr; canvas.height = size * dpr
   canvas.style.width = `${size}px`; canvas.style.height = `${size}px`
   ctx = canvas.getContext('2d'); ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
-  scale = size * 0.43
+  scale = size * 0.39
   projection = geoOrthographic().translate([size / 2, size / 2]).scale(scale).clipAngle(90).precision(.4).rotate(rotation)
   path = geoPath(projection, ctx)
 }
@@ -113,6 +113,7 @@ canvas.addEventListener('pointermove', (event) => {
 })
 canvas.addEventListener('pointerup', () => { dragging = false })
 canvas.addEventListener('pointercancel', () => { dragging = false })
+canvas.addEventListener('wheel', (event) => { event.preventDefault(); scale = Math.max(size * .28, Math.min(size * .50, scale * (event.deltaY > 0 ? .93 : 1.07))) }, { passive: false })
 mount.addEventListener('click', () => { if (dragDistance < 4) clearFocus() })
 new ResizeObserver(resize).observe(mount)
 resize()
