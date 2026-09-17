@@ -94,7 +94,8 @@ function render(now = 0) {
     button.style.zIndex = index === hoveredIndex || index === focusedIndex ? '4' : '2'
     if (!front) return
     const active = index === focusedIndex || index === hoveredIndex
-    ctx.beginPath(); ctx.arc(point[0], point[1], active ? 4 : 3, 0, Math.PI * 2); ctx.fillStyle = '#0000ff'; ctx.fill()
+    const pulse = reduceMotion.matches ? 0 : (Math.sin(now * .0035 + index * .4) + 1) * .3
+    ctx.beginPath(); ctx.arc(point[0], point[1], (active ? 4 : 3) + pulse, 0, Math.PI * 2); ctx.fillStyle = '#0000ff'; ctx.fill()
   })
 }
 function animate(elapsed) {
