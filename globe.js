@@ -13,6 +13,10 @@ const buttons = locations.map((location, index) => {
   button.className = 'globe-marker'
   button.type = 'button'
   button.setAttribute('aria-label', location.label)
+  button.addEventListener('pointerenter', () => showHover(index))
+  button.addEventListener('pointerleave', clearHover)
+  button.addEventListener('focus', () => showHover(index))
+  button.addEventListener('blur', clearHover)
   button.addEventListener('click', (event) => {
     event.stopPropagation()
     focusLocation(index)
@@ -25,6 +29,7 @@ let phi = 0
 let theta = 0.18
 let targetPhi = null
 let focusedIndex = null
+let hoveredIndex = null
 let dragging = false
 let dragDistance = 0
 let previousX = 0
@@ -32,6 +37,21 @@ let globe
 
 function wrapAngle(angle) {
   return Math.atan2(Math.sin(angle), Math.cos(angle))
+}
+
+function showLabel(index) {
+  showLabel(index)
+}
+
+function showHover(index) {
+  hoveredIndex = index
+  showLabel(index)
+}
+
+function clearHover() {
+  hoveredIndex = null
+  if (focusedIndex === null) placeLabel.hidden = true
+  else showLabel(focusedIndex)
 }
 
 function focusLocation(index) {
@@ -59,6 +79,7 @@ function updateMarkerButtons(size) {
     const button = buttons[index]
     button.style.left = `${size / 2 + x * radius}px`
     button.style.top = `${size / 2 - y * radius}px`
+    button.style.zIndex = index === hoveredIndex || index === focusedIndex ? '4' : '2'
     button.style.opacity = z > 0 ? '1' : '0'
     button.style.pointerEvents = z > 0 ? 'auto' : 'none'
   })
@@ -97,7 +118,7 @@ function buildGlobe() {
       state.theta = theta
       state.markers = locations.map(({ lat, lon }, index) => ({
         location: [lat, lon],
-        size: index === focusedIndex ? pulse * 1.12 : pulse,
+        size: index === focusedIndex || index === hoveredIndex ? pulse * 1.16 : pulse,
         color: ORANGE,
       }))
       updateMarkerButtons(size)
