@@ -94,9 +94,7 @@ function render(now = 0) {
     button.style.zIndex = index === hoveredIndex || index === focusedIndex ? '4' : '2'
     if (!front) return
     const active = index === focusedIndex || index === hoveredIndex
-    const pulse = reduceMotion.matches ? 0 : (Math.sin(now * .004 + index) + 1) / 2
-    ctx.beginPath(); ctx.arc(point[0], point[1], (active ? 8 : 5.2) + pulse * 1.4, 0, Math.PI * 2); ctx.fillStyle = `rgba(255,79,0,${.11 + pulse * .09})`; ctx.fill()
-    ctx.beginPath(); ctx.arc(point[0], point[1], active ? 3.8 : 2.8, 0, Math.PI * 2); ctx.fillStyle = '#ff4f00'; ctx.fill()
+    ctx.beginPath(); ctx.arc(point[0], point[1], active ? 4 : 3, 0, Math.PI * 2); ctx.fillStyle = '#0000ff'; ctx.fill()
   })
 }
 function animate(elapsed) {
