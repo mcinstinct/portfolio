@@ -1,4 +1,4 @@
-import { geoOrthographic, geoPath, geoGraticule10, geoContains, geoBounds, timer } from 'd3'
+import { geoOrthographic, geoPath, geoGraticule10, geoContains, geoBounds, timer } from 'https://cdn.jsdelivr.net/npm/d3@7/+esm'
 import { locations } from './locations.js'
 
 const mount = document.querySelector('[data-globe]')
