@@ -3,7 +3,6 @@ import { locations } from './locations.js'
 
 const mount = document.querySelector('[data-globe]')
 const canvas = document.createElement('canvas')
-const placeLabel = document.querySelector('[data-globe-place]')
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
 mount.prepend(canvas)
 
@@ -36,15 +35,13 @@ let ctx
 let projection
 let path
 
-function showLabel(index) { placeLabel.textContent = locations[index].label; placeLabel.hidden = false }
-function showHover(index) { hoveredIndex = index; showLabel(index) }
-function clearHover() { hoveredIndex = null; focusedIndex === null ? placeLabel.hidden = true : showLabel(focusedIndex) }
+function showHover(index) { hoveredIndex = index }
+function clearHover() { hoveredIndex = null }
 function focusLocation(index) {
   focusedIndex = index
   target = [-locations[index].lon, -locations[index].lat, 0]
-  showLabel(index)
 }
-function clearFocus() { focusedIndex = null; target = null; placeLabel.hidden = true }
+function clearFocus() { focusedIndex = null; target = null }
 function wrap(value) { return ((value + 180) % 360 + 360) % 360 - 180 }
 function visible(location) {
   const center = projection.invert([size / 2, size / 2])
