@@ -40,7 +40,8 @@ function wrapAngle(angle) {
 }
 
 function showLabel(index) {
-  showLabel(index)
+  placeLabel.textContent = locations[index].label
+  placeLabel.hidden = false
 }
 
 function showHover(index) {
