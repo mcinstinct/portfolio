@@ -1,0 +1,9 @@
+{
+  "name": "matt-portfolio-globe-prototype",
+  "private": true,
+  "version": "0.2.0",
+  "type": "module",
+  "scripts": { "dev": "vite", "build": "vite build", "preview": "vite preview" },
+  "dependencies": { "cobe": "^0.6.5" },
+  "devDependencies": { "vite": "^7.1.5" }
+}
