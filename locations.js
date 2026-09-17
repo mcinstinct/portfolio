@@ -6,6 +6,7 @@ export const locations = [
   { label: 'Myrtle Beach, SC, USA', lat: 33.6954218, lon: -78.8802094 },
   { label: 'Charlotte, NC, USA', lat: 35.2270768, lon: -80.8408933 },
   { label: 'Raleigh, NC, USA', lat: 35.7795897, lon: -78.6381787 },
+  { label: 'Asheville, NC, USA', lat: 35.5951, lon: -82.5515 },
   { label: 'Orlando, FL, USA', lat: 28.5383832, lon: -81.3789269 },
   { label: 'Key West, FL, USA', lat: 24.5550593, lon: -81.7799871 },
   { label: 'Atlanta, GA, USA', lat: 33.7501275, lon: -84.3885209 },
