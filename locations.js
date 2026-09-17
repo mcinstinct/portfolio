@@ -27,6 +27,5 @@ export const locations = [
   { label: 'Sorrento, Campania, Italy', lat: 40.6263969, lon: 14.3764167 },
   { label: 'Capri, Campania, Italy', lat: 40.5532009, lon: 14.222154 },
   { label: 'Nassau, The Bahamas', lat: 25.0443312, lon: -77.3503609 },
-  { label: 'Fort Worth, TX, USA', lat: 32.7554883, lon: -97.3307658 },
   { label: 'Grand Canyon National Park, AZ, USA', lat: 36.2678855, lon: -112.3535253 },
 ]
