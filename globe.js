@@ -1,4 +1,4 @@
-import createGlobe from 'cobe'
+import { geoOrthographic, geoPath, geoGraticule10, geoContains, geoBounds, timer } from 'd3'
 import { locations } from './locations.js'
 
 const mount = document.querySelector('[data-globe]')
@@ -7,7 +7,6 @@ const placeLabel = document.querySelector('[data-globe-place]')
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
 mount.prepend(canvas)
 
-const ORANGE = [1, 0.31, 0]
 const buttons = locations.map((location, index) => {
   const button = document.createElement('button')
   button.className = 'globe-marker'
@@ -17,131 +16,110 @@ const buttons = locations.map((location, index) => {
   button.addEventListener('pointerleave', clearHover)
   button.addEventListener('focus', () => showHover(index))
   button.addEventListener('blur', clearHover)
-  button.addEventListener('click', (event) => {
-    event.stopPropagation()
-    focusLocation(index)
-  })
+  button.addEventListener('click', (event) => { event.stopPropagation(); focusLocation(index) })
   mount.appendChild(button)
   return button
 })
 
-let phi = 0
-let theta = 0.18
-let targetPhi = null
+let land = null
+let dots = []
+let rotation = [-18, -11, 0]
+let target = null
 let focusedIndex = null
 let hoveredIndex = null
 let dragging = false
 let dragDistance = 0
-let previousX = 0
-let globe
+let pointer = [0, 0]
+let size = 600
+let scale = 250
+let ctx
+let projection
+let path
 
-function wrapAngle(angle) {
-  return Math.atan2(Math.sin(angle), Math.cos(angle))
-}
-
-function showLabel(index) {
-  placeLabel.textContent = locations[index].label
-  placeLabel.hidden = false
-}
-
-function showHover(index) {
-  hoveredIndex = index
-  showLabel(index)
-}
-
-function clearHover() {
-  hoveredIndex = null
-  if (focusedIndex === null) placeLabel.hidden = true
-  else showLabel(focusedIndex)
-}
-
+function showLabel(index) { placeLabel.textContent = locations[index].label; placeLabel.hidden = false }
+function showHover(index) { hoveredIndex = index; showLabel(index) }
+function clearHover() { hoveredIndex = null; focusedIndex === null ? placeLabel.hidden = true : showLabel(focusedIndex) }
 function focusLocation(index) {
   focusedIndex = index
-  targetPhi = wrapAngle(-locations[index].lon * Math.PI / 180)
-  placeLabel.textContent = locations[index].label
-  placeLabel.hidden = false
+  target = [-locations[index].lon, -locations[index].lat, 0]
+  showLabel(index)
 }
-
-function clearFocus() {
-  focusedIndex = null
-  targetPhi = null
-  placeLabel.hidden = true
+function clearFocus() { focusedIndex = null; target = null; placeLabel.hidden = true }
+function wrap(value) { return ((value + 180) % 360 + 360) % 360 - 180 }
+function visible(location) {
+  const center = projection.invert([size / 2, size / 2])
+  const lambda = (location.lon - center[0]) * Math.PI / 180
+  const phi1 = location.lat * Math.PI / 180
+  const phi2 = center[1] * Math.PI / 180
+  return Math.sin(phi1) * Math.sin(phi2) + Math.cos(phi1) * Math.cos(phi2) * Math.cos(lambda) > 0
 }
-
-function updateMarkerButtons(size) {
-  const radius = size * 0.39
+function makeDots(feature, step = 2.6) {
+  const result = []
+  const [[minLon, minLat], [maxLon, maxLat]] = geoBounds(feature)
+  for (let lat = Math.ceil(minLat / step) * step; lat <= maxLat; lat += step) {
+    const offset = (Math.round(lat / step) & 1) * step / 2
+    for (let lon = Math.ceil(minLon / step) * step + offset; lon <= maxLon; lon += step) {
+      if (geoContains(feature, [lon, lat])) result.push([lon, lat])
+    }
+  }
+  return result
+}
+function resize() {
+  size = Math.floor(Math.min(mount.clientWidth, mount.clientHeight))
+  const dpr = Math.min(devicePixelRatio || 1, 2)
+  canvas.width = size * dpr; canvas.height = size * dpr
+  canvas.style.width = `${size}px`; canvas.style.height = `${size}px`
+  ctx = canvas.getContext('2d'); ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+  scale = size * 0.43
+  projection = geoOrthographic().translate([size / 2, size / 2]).scale(scale).clipAngle(90).precision(.4).rotate(rotation)
+  path = geoPath(projection, ctx)
+}
+function render(now = 0) {
+  if (!projection) return
+  projection.rotate(rotation).scale(scale)
+  ctx.clearRect(0, 0, size, size)
+  ctx.beginPath(); path({ type: 'Sphere' }); ctx.fillStyle = '#fff'; ctx.fill(); ctx.strokeStyle = '#d8d8d6'; ctx.lineWidth = 1.1; ctx.stroke()
+  ctx.beginPath(); path(geoGraticule10()); ctx.strokeStyle = 'rgba(40,40,38,.10)'; ctx.lineWidth = .65; ctx.stroke()
+  if (land) {
+    ctx.beginPath(); path(land); ctx.fillStyle = '#f2f2ef'; ctx.fill(); ctx.strokeStyle = '#babbb7'; ctx.lineWidth = .75; ctx.stroke()
+    ctx.fillStyle = 'rgba(58,58,54,.52)'
+    for (const dot of dots) {
+      const point = projection(dot)
+      if (point && visible({ lon: dot[0], lat: dot[1] })) { ctx.beginPath(); ctx.arc(point[0], point[1], Math.max(.72, size / 900), 0, Math.PI * 2); ctx.fill() }
+    }
+  }
   locations.forEach((location, index) => {
-    const lat = location.lat * Math.PI / 180
-    const lon = location.lon * Math.PI / 180 + phi
-    const cosLat = Math.cos(lat)
-    const x = cosLat * Math.sin(lon)
-    const y = Math.sin(lat) * Math.cos(theta) - cosLat * Math.cos(lon) * Math.sin(theta)
-    const z = Math.sin(lat) * Math.sin(theta) + cosLat * Math.cos(lon) * Math.cos(theta)
+    const point = projection([location.lon, location.lat])
+    const front = point && visible(location)
     const button = buttons[index]
-    button.style.left = `${size / 2 + x * radius}px`
-    button.style.top = `${size / 2 - y * radius}px`
+    button.style.left = `${point?.[0] || -20}px`; button.style.top = `${point?.[1] || -20}px`
+    button.style.opacity = front ? '1' : '0'; button.style.pointerEvents = front ? 'auto' : 'none'
     button.style.zIndex = index === hoveredIndex || index === focusedIndex ? '4' : '2'
-    button.style.opacity = z > 0 ? '1' : '0'
-    button.style.pointerEvents = z > 0 ? 'auto' : 'none'
+    if (!front) return
+    const active = index === focusedIndex || index === hoveredIndex
+    const pulse = reduceMotion.matches ? 0 : (Math.sin(now * .004 + index) + 1) / 2
+    ctx.beginPath(); ctx.arc(point[0], point[1], (active ? 8 : 5.2) + pulse * 1.4, 0, Math.PI * 2); ctx.fillStyle = `rgba(255,79,0,${.11 + pulse * .09})`; ctx.fill()
+    ctx.beginPath(); ctx.arc(point[0], point[1], active ? 3.8 : 2.8, 0, Math.PI * 2); ctx.fillStyle = '#ff4f00'; ctx.fill()
   })
 }
-
-function buildGlobe() {
-  const size = Math.min(mount.clientWidth, mount.clientHeight)
-  const dpr = Math.min(window.devicePixelRatio, 2)
-  globe?.destroy()
-  globe = createGlobe(canvas, {
-    devicePixelRatio: dpr,
-    width: size * dpr,
-    height: size * dpr,
-    phi,
-    theta,
-    dark: 0,
-    diffuse: 1.15,
-    mapSamples: 24000,
-    mapBrightness: 1.6,
-    mapBaseBrightness: 0,
-    baseColor: [0.93, 0.93, 0.93],
-    markerColor: ORANGE,
-    glowColor: [1, 1, 1],
-    markers: locations.map(({ lat, lon }) => ({ location: [lat, lon], size: 0.055 })),
-    opacity: 1,
-    scale: 1,
-    onRender: (state) => {
-      if (targetPhi !== null) {
-        const difference = wrapAngle(targetPhi - phi)
-        phi = wrapAngle(phi + difference * 0.07)
-      } else if (!dragging && !reduceMotion.matches) {
-        phi += 0.0022
-      }
-      const pulse = reduceMotion.matches ? 0.055 : 0.055 + Math.sin(performance.now() * 0.0024) * 0.005
-      state.phi = phi
-      state.theta = theta
-      state.markers = locations.map(({ lat, lon }, index) => ({
-        location: [lat, lon],
-        size: index === focusedIndex || index === hoveredIndex ? pulse * 1.16 : pulse,
-        color: ORANGE,
-      }))
-      updateMarkerButtons(size)
-    },
-  })
+function animate(elapsed) {
+  if (target) {
+    const dLon = wrap(target[0] - rotation[0]); const dLat = target[1] - rotation[1]
+    rotation[0] += dLon * .075; rotation[1] += dLat * .075
+  } else if (!dragging && !reduceMotion.matches) rotation[0] = wrap(rotation[0] + .075)
+  render(elapsed)
 }
-
-canvas.addEventListener('pointerdown', (event) => {
-  dragging = true
-  dragDistance = 0
-  previousX = event.clientX
-  canvas.setPointerCapture(event.pointerId)
-})
+canvas.addEventListener('pointerdown', (event) => { dragging = true; dragDistance = 0; pointer = [event.clientX, event.clientY]; canvas.setPointerCapture(event.pointerId) })
 canvas.addEventListener('pointermove', (event) => {
   if (!dragging) return
-  const movement = event.clientX - previousX
-  dragDistance += Math.abs(movement)
-  phi += movement * 0.006
-  previousX = event.clientX
+  const dx = event.clientX - pointer[0], dy = event.clientY - pointer[1]
+  dragDistance += Math.abs(dx) + Math.abs(dy); rotation[0] = wrap(rotation[0] + dx * .32); rotation[1] = Math.max(-80, Math.min(80, rotation[1] - dy * .32)); pointer = [event.clientX, event.clientY]
 })
 canvas.addEventListener('pointerup', () => { dragging = false })
 canvas.addEventListener('pointercancel', () => { dragging = false })
+canvas.addEventListener('wheel', (event) => { event.preventDefault(); scale = Math.max(size * .30, Math.min(size * .53, scale * (event.deltaY > 0 ? .93 : 1.07))) }, { passive: false })
 mount.addEventListener('click', () => { if (dragDistance < 4) clearFocus() })
-new ResizeObserver(buildGlobe).observe(mount)
-buildGlobe()
+new ResizeObserver(resize).observe(mount)
+resize()
+fetch('./data/land.json').then(r => r.json()).then(value => { land = value; dots = value.features.flatMap(feature => makeDots(feature)); render() })
+timer(animate)
