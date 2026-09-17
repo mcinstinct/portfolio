@@ -67,7 +67,7 @@ function resize() {
   canvas.width = size * dpr; canvas.height = size * dpr
   canvas.style.width = `${size}px`; canvas.style.height = `${size}px`
   ctx = canvas.getContext('2d'); ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
-  scale = size * (window.matchMedia('(max-width: 760px)').matches ? 0.49 : 0.28)
+  scale = size * (window.matchMedia('(max-width: 760px)').matches ? 0.47 : 0.28)
   projection = geoOrthographic().translate([size / 2, size / 2]).scale(scale).clipAngle(90).precision(.4).rotate(rotation)
   path = geoPath(projection, ctx)
 }
