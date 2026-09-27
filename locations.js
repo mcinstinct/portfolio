@@ -1,6 +1,7 @@
 // Matt's visited places. Add one full display label, latitude, and longitude per dot.
 export const locations = [
   { label: 'Charleston, SC, USA', lat: 32.7833163, lon: -79.9319664 },
+  { label: 'Summerville, SC, USA', lat: 33.0188816, lon: -80.1758171 },
   { label: 'Columbia, SC, USA', lat: 34.0008322, lon: -81.035147 },
   { label: 'Greenville, SC, USA', lat: 34.8484984, lon: -82.4000158 },
   { label: 'Myrtle Beach, SC, USA', lat: 33.6954218, lon: -78.8802094 },
@@ -14,11 +15,13 @@ export const locations = [
   { label: 'Tallahassee, FL, USA', lat: 30.4381828, lon: -84.2806235 },
   { label: 'Norfolk, VA, USA', lat: 36.8507689, lon: -76.2858726 },
   { label: 'Washington, DC, USA', lat: 38.9072873, lon: -77.0369274 },
+  { label: 'McLean, VA, USA', lat: 38.9338676, lon: -77.1772604 },
   { label: 'Chattanooga, TN, USA', lat: 35.0457984, lon: -85.3093995 },
   { label: 'Nashville, TN, USA', lat: 36.1626638, lon: -86.7816016 },
   { label: 'New York City, NY, USA', lat: 40.7127753, lon: -74.0059728 },
   { label: 'Chicago, IL, USA', lat: 41.88325, lon: -87.6323879 },
   { label: 'Dallas, TX, USA', lat: 32.7766642, lon: -96.7969879 },
+  { label: 'Fort Worth, TX, USA', lat: 32.7554883, lon: -97.3307658 },
   { label: 'Las Vegas, NV, USA', lat: 36.171563, lon: -115.1391009 },
   { label: 'Guadalajara, Jalisco, Mexico', lat: 20.6751707, lon: -103.3473385 },
   { label: 'Rome, Lazio, Italy', lat: 41.8967068, lon: 12.4822025 },
