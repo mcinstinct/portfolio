@@ -3,7 +3,7 @@
 
 @font-face {
   font-family: "Satoshi";
-  src: url("fonts/Satoshi-Medium.woff2") format("woff2");
+  src: url("/fonts/Satoshi-Medium.af02a722.woff2") format("woff2");
   font-weight: 500;
   font-display: swap;
 }
@@ -11,7 +11,7 @@
 /* Devanagari greeting subset, matched to Satoshi's medium weight */
 @font-face {
   font-family: "Noto Sans Devanagari";
-  src: url("fonts/NotoSansDevanagari-subset.ttf") format("truetype");
+  src: url("/fonts/NotoSansDevanagari-subset.0fcb84b4.ttf") format("truetype");
   font-weight: 500;
   font-display: swap;
   unicode-range: U+0928, U+092E, U+0938, U+094D, U+0924, U+0947;
@@ -20,7 +20,7 @@
 /* Only the five characters in こんにちは, to match Satoshi's weight */
 @font-face {
   font-family: "Noto Sans JP";
-  src: url("fonts/NotoSansJP-subset.ttf") format("truetype");
+  src: url("/fonts/NotoSansJP-subset.8bc120c3.ttf") format("truetype");
   font-weight: 500;
   font-display: swap;
   unicode-range: U+3053, U+3093, U+306B, U+3061, U+306F;
