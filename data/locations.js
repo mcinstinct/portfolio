@@ -1,5 +1,5 @@
-// Matt's visited places. Add one full display label, latitude, and longitude per dot.
-export const locations = [
+// Places Matt has been. One line per dot: label, lat, lon.
+window.LOCATIONS = [
   { label: 'Charleston, SC, USA', lat: 32.7833163, lon: -79.9319664 },
   { label: 'Summerville, SC, USA', lat: 33.0188816, lon: -80.1758171 },
   { label: 'Columbia, SC, USA', lat: 34.0008322, lon: -81.035147 },

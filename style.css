@@ -1,0 +1,75 @@
+/* Design system. Every page links this file. One font, one size, one weight:
+   separation is spacing only. Change a token here and every page follows. */
+
+@font-face {
+  font-family: "Satoshi";
+  src: url("fonts/Satoshi-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-display: swap;
+}
+
+/* Devanagari greeting subset, matched to Satoshi's medium weight */
+@font-face {
+  font-family: "Noto Sans Devanagari";
+  src: url("fonts/NotoSansDevanagari-subset.ttf") format("truetype");
+  font-weight: 500;
+  font-display: swap;
+  unicode-range: U+0928, U+092E, U+0938, U+094D, U+0924, U+0947;
+}
+
+/* Only the five characters in こんにちは, to match Satoshi's weight */
+@font-face {
+  font-family: "Noto Sans JP";
+  src: url("fonts/NotoSansJP-subset.ttf") format("truetype");
+  font-weight: 500;
+  font-display: swap;
+  unicode-range: U+3053, U+3093, U+306B, U+3061, U+306F;
+}
+
+:root {
+  --bg: #f5f5f5;
+  --ink: #121212;
+  --muted: #8a8a8a;
+  --link: #0000ff;
+  --select: #fbff00;
+  --radius: 7px;      /* image corners, still subtle */
+  --gap: 1.5em;       /* space between blocks */
+  --column: 520px;
+}
+
+* { font: inherit; box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 500 18px/1.5 "Satoshi", "Noto Sans Devanagari", "Noto Sans JP", "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+}
+
+::selection { background: var(--select); color: var(--ink); }
+
+a { color: var(--link); text-decoration: underline; }
+
+/* Page column and nav share one width so they line up */
+nav, main { max-width: var(--column); margin: 0 auto; padding: 0 24px; }
+
+nav { display: flex; justify-content: space-between; padding-top: 32px; }
+nav .links { display: flex; gap: 1.5em; }
+nav a.home { text-decoration: none; display: flex; align-items: center; }
+nav a.home .tiger { font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif; font-size: 24px; line-height: 1; }
+
+main { padding-top: 72px; padding-bottom: 120px; }
+
+p { margin: 0 0 var(--gap); }
+.section-title { margin-top: calc(var(--gap) * 1.5); }
+.muted { color: var(--muted); }
+
+figure { margin: 0 0 var(--gap); }
+figure img { display: block; max-width: 100%; height: auto; border-radius: var(--radius); }
+figcaption { margin-top: 0.35em; color: var(--muted); }
+
+/* Travel globe */
+.globe { width: min(760px, 100vw); aspect-ratio: 1; position: relative; left: 50%; transform: translateX(-50%); }
+.globe canvas { display: block; touch-action: none; cursor: grab; }
+.globe canvas:active { cursor: grabbing; }
+@media (min-width: 761px) { .globe { margin-top: -90px; margin-bottom: -90px; } }
