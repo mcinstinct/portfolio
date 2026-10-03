@@ -1,4 +1,4 @@
-// Spinning dotted globe. Drag to rotate, scroll to zoom. Needs d3geo.js, land.js, locations.js first.
+// Spinning dotted globe. Drag to rotate; fixed at its opening size. Needs d3geo.js, land.js, locations.js first.
 (function () {
   var g = d3g, mount = document.querySelector('[data-globe]');
   var canvas = document.createElement('canvas');
@@ -79,11 +79,6 @@
   });
   canvas.addEventListener('pointerup', function () { dragging = false; });
   canvas.addEventListener('pointercancel', function () { dragging = false; });
-  canvas.addEventListener('wheel', function (e) {
-    e.preventDefault();
-    scale = Math.max(size * 0.28, Math.min(size * 0.5, scale * (e.deltaY > 0 ? 0.93 : 1.07)));
-  }, { passive: false });
-
   new ResizeObserver(resize).observe(mount);
   resize();
   LAND.features.forEach(function (f) { dots = dots.concat(makeDots(f, 2.6)); });
