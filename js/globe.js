@@ -70,9 +70,20 @@
     draw(t);
   });
 
-  canvas.addEventListener('pointerdown', function (e) { dragging = true; last = [e.clientX, e.clientY]; canvas.setPointerCapture(e.pointerId); });
+  function onGlobe(e) {
+    var rect = canvas.getBoundingClientRect();
+    var x = e.clientX - rect.left - size / 2;
+    var y = e.clientY - rect.top - size / 2;
+    return x * x + y * y <= scale * scale;
+  }
+
+  canvas.addEventListener('pointerdown', function (e) {
+    if (!onGlobe(e)) return;
+    dragging = true; last = [e.clientX, e.clientY]; canvas.setPointerCapture(e.pointerId);
+  });
   canvas.addEventListener('pointermove', function (e) {
     if (!dragging) return;
+    if (!onGlobe(e)) { last = [e.clientX, e.clientY]; return; }
     rotation[0] = wrap(rotation[0] + (e.clientX - last[0]) * 0.32);
     rotation[1] = Math.max(-80, Math.min(80, rotation[1] - (e.clientY - last[1]) * 0.32));
     last = [e.clientX, e.clientY];
