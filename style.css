@@ -31,7 +31,7 @@
   --ink: #121212;
   --muted: #8a8a8a;
   --link: #0000ff;
-  --select: #fbff00;
+  --select: #e5ff00;
   --radius: 7px;      /* image corners, still subtle */
   --gap: 1.5em;       /* space between blocks */
   --column: 520px;
@@ -43,7 +43,7 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--ink);
-  font: 500 18px/1.5 "Satoshi", "Noto Sans Devanagari", "Noto Sans JP", "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+  font: 500 18px/1.5 "Satoshi", "Noto Sans Devanagari", "Noto Sans JP", sans-serif;
 }
 
 ::selection { background: var(--select); color: var(--ink); }
@@ -56,7 +56,7 @@ nav, main { max-width: var(--column); margin: 0 auto; padding: 0 24px; }
 nav { display: flex; justify-content: space-between; padding-top: 32px; }
 nav .links { display: flex; gap: 1.5em; }
 nav a.home { text-decoration: none; display: flex; align-items: center; }
-nav a.home .tiger { font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif; font-size: 24px; line-height: 1; }
+nav a.home .can { display: block; width: 24px; height: 24px; color: var(--ink); }
 
 main { padding-top: 72px; padding-bottom: 120px; }
 
