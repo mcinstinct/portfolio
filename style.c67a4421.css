@@ -56,7 +56,7 @@ nav, main { max-width: var(--column); margin: 0 auto; padding: 0 24px; }
 nav { display: flex; justify-content: space-between; padding-top: 32px; }
 nav .links { display: flex; gap: 1.5em; }
 nav a.home { text-decoration: none; display: flex; align-items: center; }
-nav a.home .can { display: block; width: 24px; height: 24px; color: var(--ink); }
+nav a.home .logo { display: block; width: 24px; height: 24px; color: var(--ink); }
 
 main { padding-top: 72px; padding-bottom: 120px; }
 
