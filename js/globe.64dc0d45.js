@@ -56,7 +56,7 @@
       if (p && front(d[0], d[1])) { ctx.beginPath(); ctx.arc(p[0], p[1], Math.max(0.72, size / 900), 0, 7); ctx.fill(); }
     });
 
-    ctx.fillStyle = '#0000ff';
+    ctx.fillStyle = '#121212';
     LOCATIONS.forEach(function (l, i) {
       var p = projection([l.lon, l.lat]);
       if (!p || !front(l.lon, l.lat)) return;
